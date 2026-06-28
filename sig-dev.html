@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CDI Signature Workspace</title>
+<!-- sig-dev.html v0.6 — revisited the three neutral/default themes per request:
+     admin Corporate Gray's link went from a generic bright blue (#1a5fb4) to a muted
+     slate-blue (#3a5570), border from near-invisible pale gray (#cfd2d8) to a visible
+     neutral gray (#9aa0a8). yurixmoos Default was previously byte-identical to admin's
+     Corporate Gray (same hex values under a different name) — now genuinely
+     monochrome (link = navy, no color at all), so the two "safe defaults" are
+     actually distinct. iridex Light-Blue's border was re-sampled against the real
+     iridex.png pixels — true accent is a near-pure cyan (#00ffff); bumped the muted
+     border from #0bb8c4 to #0ec4d2, closer to the asset without going full neon.
+     status: active -->
+<style>
+:root{
+  --bg:#0a1318;
+  --surface:#12191e;
+  --surface-2:#1a2228;
+  --border:#28323a;
+  --text:#f1f1ee;
+  --text-muted:#9aa3a8;
+  --ox-deep:#4a1419;
+  --ox:#73282f;
+  --ox-bright:#9c4a52;
+}
+*{box-sizing:border-box;}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;}
+.site-banner{background:#000;color:var(--text);padding:16px 32px;display:flex;align-items:baseline;gap:10px;border-bottom:2px solid var(--ox);}
+.site-banner .mark{font-size:18px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;}
+.site-banner .sub{font-size:12px;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;}
+.site-nav{background:#000;border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;min-height:46px;flex-wrap:wrap;}
+.nav-links{display:flex;gap:22px;font-size:12px;}
+.nav-links a{color:var(--text-muted);text-decoration:none;}
+.nav-links a:hover{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:14px;font-size:12px;padding:8px 0;}
+.nav-signin{background:var(--ox);color:var(--text);border:0;border-radius:5px;padding:6px 14px;font-size:12px;cursor:pointer;}
+.nav-signin:hover{background:var(--ox-bright);}
+.nav-profile{width:32px;height:32px;border-radius:50%;object-fit:cover;cursor:pointer;display:block;border:2px solid var(--ox);}
+.org-brand{display:flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;height:32px;box-sizing:border-box;padding:0 4px 0 14px;}
+.org-brand img{width:26px;height:26px;border-radius:50%;object-fit:cover;display:block;}
+.org-brand span{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;}
+.page{width:100%;padding:24px 32px 40px;}
+.lede{font-size:12px;color:var(--text-muted);line-height:1.5;margin:0 0 8px;max-width:980px;}
+code{background:var(--surface-2);color:var(--text);padding:1px 5px;border-radius:3px;font-size:0.95em;}
+h2.section{font-size:12px;text-transform:uppercase;letter-spacing:.07em;margin:26px 0 4px;border-top:1px solid var(--ox);padding-top:10px;color:var(--text-muted);}
+.workspace-cols,.export-cols{display:flex;flex-wrap:wrap;gap:20px;margin-top:14px;}
+.id-col{display:flex;flex-direction:column;gap:4px;flex:1 1 380px;min-width:380px;}
+.id-col h3{font-size:13px;margin:0 0 2px;text-transform:uppercase;letter-spacing:.04em;color:var(--text);}
+.row-status{font-size:11px;color:var(--text-muted);margin:0 0 8px;}
+.row-status b{color:var(--text);}
+.tiles-stack{display:flex;flex-direction:column;gap:14px;}
+.theme-tile{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:13px 15px;}
+.tile-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px;}
+.tile-label{font-size:11px;color:var(--text);font-weight:bold;}
+.tile-desc{font-size:10px;color:var(--text-muted);margin:0 0 10px;line-height:1.4;}
+.active-badge{display:inline-block;background:#1a8a4a;color:#fff;font-size:9px;padding:2px 6px;border-radius:9px;font-weight:bold;vertical-align:middle;white-space:nowrap;}
+.tile-head-right{display:flex;align-items:center;gap:6px;}
+.mini-btn{font-size:9px;font-family:inherit;background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border);border-radius:5px;padding:2px 7px;cursor:not-allowed;}
+.mini-btn:disabled{opacity:.55;}
+.status-chip{display:inline-block;font-size:11px;color:var(--text-muted);margin-right:14px;}
+.status-chip b{color:var(--text);}
+.ws-pair{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;}
+.ws-variant{display:flex;flex-direction:column;}
+.vlabel{font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;font-weight:bold;}
+.ws-render{margin-bottom:8px;overflow-x:auto;max-width:100%;background:#fff;border-radius:6px;padding:10px;}
+.import-btn{font-size:10px;font-family:inherit;background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:5px;padding:4px 10px;cursor:pointer;align-self:flex-start;}
+.import-btn:hover{background:var(--ox);color:#fff;border-color:var(--ox);}
+.export-col{display:flex;flex-direction:column;gap:14px;flex:1 1 380px;min-width:380px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;}
+.card h2{font-size:13px;margin:0 0 2px;color:var(--text);}
+.card .tag{font-size:10px;color:var(--text-muted);margin:0 0 12px;}
+.sigbox{border:1px dashed var(--border);border-radius:6px;padding:14px;background:#fff;min-height:38px;overflow-x:auto;}
+.btn{margin-top:10px;font-size:12px;font-family:inherit;background:var(--ox);color:#fff;border:0;border-radius:5px;padding:7px 15px;cursor:pointer;}
+.btn:hover{background:var(--ox-bright);}
+.note{font-size:11px;color:var(--text-muted);line-height:1.5;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-top:14px;}
+.note b{color:var(--text);}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:4px;}
+</style>
+</head>
+<body>
+
+<header class="site-banner">
+<span class="mark">&#9670; Carpe Diem Innovations</span><span class="sub">Signature Workspace</span>
+</header>
+
+<nav class="site-nav">
+<div class="nav-links">
+<a href="#" onclick="return false;">Home</a>
+<a href="#" onclick="return false;">Team</a>
+<a href="#" onclick="return false;">Projects</a>
+<a href="#" onclick="return false;">Resources</a>
+</div>
+<div class="nav-right">
+<button class="nav-signin" id="nav-signin-btn" title="Demo toggle &mdash; not real auth" onclick="toggleSignIn(this)">Sign in</button>
+<div class="org-brand"><span>Carpe Diem Innovations</span><img src="https://assets.carpedieminnovationsinc.com/sig/admin.png" alt="org mark (placeholder)"></div>
+<img class="nav-profile" id="nav-profile-img" alt="profile (placeholder)" title="Profile (placeholder)" style="display:none;">
+</div>
+</nav>
+
+<div class="page">
+<h2 class="section">Workspace &mdash; source</h2>
+<div class="workspace-cols">
+
+<div class="id-col">
+<h3>admin</h3>
+<div class="row-status" id="status-admin"></div>
+<div class="tiles-stack">
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Corporate Gray</span><span class="tile-head-right"><span class="active-badge" id="badge-admin-default" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Neutral navy/gray, safe default &mdash; muted slate-blue link, not the generic bright blue it used to be. CDI Brand (below) is the branded option, pulled from admin.png.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-admin-default-min"></div><button class="import-btn" onclick="importTheme('admin','default','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-admin-default-max"></div><button class="import-btn" onclick="importTheme('admin','default','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">CDI Brand</span><span class="tile-head-right"><span class="active-badge" id="badge-admin-brand" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Black name + oxblood divider/links, sampled straight from admin.png. The branded option the gray default was waiting on.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-admin-brand-min"></div><button class="import-btn" onclick="importTheme('admin','brand','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-admin-brand-max"></div><button class="import-btn" onclick="importTheme('admin','brand','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Monochrome Black</span><span class="tile-head-right"><span class="active-badge" id="badge-admin-mono" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">No color at all &mdash; pure black/gray, mirrors iridex's Monochrome Navy. The third, most conservative option (my pick, not yours yet &mdash; flag if you want something else here).</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-admin-mono-min"></div><button class="import-btn" onclick="importTheme('admin','mono','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-admin-mono-max"></div><button class="import-btn" onclick="importTheme('admin','mono','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+</div>
+</div>
+<div class="id-col">
+<h3>iridex</h3>
+<div class="row-status" id="status-iridex"></div>
+<div class="tiles-stack">
+
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Light-Blue</span><span class="tile-head-right"><span class="active-badge" id="badge-iridex-lightblue" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Sampled from the art &mdash; navy + cobalt + cyan accent. Playful-technical, the default voice.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-iridex-lightblue-min"></div><button class="import-btn" onclick="importTheme('iridex','lightblue','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-iridex-lightblue-max"></div><button class="import-btn" onclick="importTheme('iridex','lightblue','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Monochrome Navy</span><span class="tile-head-right"><span class="active-badge" id="badge-iridex-navy" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Single hue, no cyan. Conservative/enterprise-leaning, for stiffer threads.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-iridex-navy-min"></div><button class="import-btn" onclick="importTheme('iridex','navy','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-iridex-navy-max"></div><button class="import-btn" onclick="importTheme('iridex','navy','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Glitch Duo-tone</span><span class="tile-head-right"><span class="active-badge" id="badge-iridex-glitch" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Leans into the art's actual cyan/magenta channel-split instead of toning it down. Boldest option.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-iridex-glitch-min"></div><button class="import-btn" onclick="importTheme('iridex','glitch','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-iridex-glitch-max"></div><button class="import-btn" onclick="importTheme('iridex','glitch','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="id-col">
+<h3>yurixmoos</h3>
+<div class="row-status" id="status-yurixmoos"></div>
+<div class="tiles-stack">
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Default</span><span class="tile-head-right"><span class="active-badge" id="badge-yurixmoos-default" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Personal correspondence, neutral baseline &mdash; fully monochrome now (no link color), distinct from admin's gray-blue. Vyshyvanka and Heritage (below) are the branded options. Max tier is structurally real but content-identical to min except logo size &mdash; no differentiating copy specified yet.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-yurixmoos-default-min"></div><button class="import-btn" onclick="importTheme('yurixmoos','default','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-yurixmoos-default-max"></div><button class="import-btn" onclick="importTheme('yurixmoos','default','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Vyshyvanka</span><span class="tile-head-right"><span class="active-badge" id="badge-yurixmoos-vyshyvanka" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Folk-embroidery red, brighter and warmer than CDI's oxblood &mdash; same black/red/white family, kept distinct from the corporate identity.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-yurixmoos-vyshyvanka-min"></div><button class="import-btn" onclick="importTheme('yurixmoos','vyshyvanka','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-yurixmoos-vyshyvanka-max"></div><button class="import-btn" onclick="importTheme('yurixmoos','vyshyvanka','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Heritage</span><span class="tile-head-right"><span class="active-badge" id="badge-yurixmoos-heritage" style="display:none;"></span><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Gold/yellow divider and links &mdash; third option, rounds yurixmoos up to iridex's theme count.</p>
+<div class="ws-pair">
+<div class="ws-variant"><div class="vlabel">min</div><div class="ws-render" id="ws-yurixmoos-heritage-min"></div><button class="import-btn" onclick="importTheme('yurixmoos','heritage','min')">Import &rarr; Min</button></div>
+<div class="ws-variant"><div class="vlabel">max</div><div class="ws-render" id="ws-yurixmoos-heritage-max"></div><button class="import-btn" onclick="importTheme('yurixmoos','heritage','max')">Import &rarr; Max</button></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<h2 class="section">Exports &mdash; final signatures</h2>
+<p class="lede">Click <b>Copy</b>, paste into Gmail &rarr; Settings &rarr; General &rarr; Signature. Rendered live from the active workspace selections.</p>
+<div class="export-cols">
+
+<div class="export-col">
+<div class="card">
+<h2>admin &mdash; min</h2>
+<p class="tag">financial / legal / employment threads &mdash; no dev links &middot; logo 94px</p>
+<div class="sigbox" id="sig-admin-min"></div>
+<button class="btn" onclick="copySig('sig-admin-min',this)">Copy</button>
+</div>
+<div class="card">
+<h2>admin &mdash; max</h2>
+<p class="tag">vendor / AI-platform threads &middot; logo 164px</p>
+<div class="sigbox" id="sig-admin-max"></div>
+<button class="btn" onclick="copySig('sig-admin-max',this)">Copy</button>
+</div>
+</div>
+
+<div class="export-col">
+<div class="card">
+<h2>iridex &mdash; min</h2>
+<p class="tag">GitHub + Hugging Face + ORCID &middot; logo 113px</p>
+<div class="sigbox" id="sig-iridex-min"></div>
+<button class="btn" onclick="copySig('sig-iridex-min',this)">Copy</button>
+</div>
+<div class="card">
+<h2>iridex &mdash; max</h2>
+<p class="tag">complete dev footprint &middot; logo 161px</p>
+<div class="sigbox" id="sig-iridex-max"></div>
+<button class="btn" onclick="copySig('sig-iridex-max',this)">Copy</button>
+</div>
+</div>
+
+<div class="export-col">
+<div class="card">
+<h2>yurixmoos &mdash; min</h2>
+<p class="tag">real-life correspondence &middot; logo 42px</p>
+<div class="sigbox" id="sig-yurixmoos-min"></div>
+<button class="btn" onclick="copySig('sig-yurixmoos-min',this)">Copy</button>
+</div>
+<div class="card">
+<h2>yurixmoos &mdash; max</h2>
+<p class="tag">real-life correspondence, larger &middot; logo 64px (unconfirmed size)</p>
+<div class="sigbox" id="sig-yurixmoos-max"></div>
+<button class="btn" onclick="copySig('sig-yurixmoos-max',this)">Copy</button>
+</div>
+</div>
+
+</div>
+<h2 class="section">Custom test</h2>
+<div class="tiles-stack">
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Template (test.png) &mdash; Min</span><span class="tile-head-right"><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Generic blank template, min tier &mdash; validates the CDN path (<code>/sig/test.png</code>) at the smaller logo size. Not tied to a real identity, not importable.</p>
+<div class="ws-render" id="ws-template-min"></div>
+</div>
+<div class="theme-tile">
+<div class="tile-head"><span class="tile-label">Template (test.png) &mdash; Max</span><span class="tile-head-right"><button class="mini-btn" disabled title="To-do: needs a new theming system for inverted text">Invert</button><button class="mini-btn" disabled title="To-do: requires LLM API access">Regenerate</button><button class="mini-btn" disabled title="To-do: manual color/copy editor, not built">Edit</button></span></div>
+<p class="tile-desc">Same template, max tier &mdash; shows every optional element a real signature can carry (subs, extra line, links) at the larger logo size.</p>
+<div class="ws-render" id="ws-template-max"></div>
+</div>
+</div>
+
+<h2 class="section">Debug</h2>
+
+<div class="note">
+<b>Deployment:</b> live at <code>assets.carpedieminnovationsinc.com</code>, local clone <code>B:\GitHub\assets</code> (remote <code>carpe-diem-innovations-inc/assets</code>, clean, pushed).
+<table cellpadding="0" cellspacing="0" style="font-size:11px;margin-top:8px;width:100%;">
+<tr><td style="padding:2px 10px 2px 0;color:#9aa0a8;">iridex.png</td><td style="padding:2px 0;color:#1a8a4a;"><b>live</b></td><td style="padding:2px 0 2px 14px;color:#9aa0a8;">verified byte-identical to processed export</td></tr>
+<tr><td style="padding:2px 10px 2px 0;color:#9aa0a8;">admin.png</td><td style="padding:2px 0;color:#1a8a4a;"><b>live</b></td><td style="padding:2px 0 2px 14px;color:#9aa0a8;">renamed from cdi.png, pushed (6c19730..9686495)</td></tr>
+<tr><td style="padding:2px 10px 2px 0;color:#9aa0a8;">yurixmoos.png</td><td style="padding:2px 0;color:#1a8a4a;"><b>live</b></td><td style="padding:2px 0 2px 14px;color:#9aa0a8;">pushed to B:\GitHub\assets\sig\, confirmed live on CDN</td></tr>
+<tr><td style="padding:2px 10px 2px 0;color:#9aa0a8;">test.png</td><td style="padding:2px 0;color:#b8302f;"><b>mismatch</b></td><td style="padding:2px 0 2px 14px;color:#9aa0a8;">live file is raw unprocessed yurixmoos source, not the validated asset; not overwritten without confirmation</td></tr>
+</table>
+Deploy path: <code>process_logo.py</code> &rarr; <code>B:\_claude\artifacts\sig\</code> &rarr; copy to <code>B:\GitHub\assets\sig\</code> &rarr; <code>git push</code> (push gated on your per-instance confirmation).
+</div>
+<div class="note">
+<b>Logo sizing</b> (computed from font-size &times; 1.45 line-height, tied to tier not theme): min &mdash; yurixmoos 42px &middot; admin 94px &middot; iridex 113px. max &mdash; yurixmoos 64px (assumption, unconfirmed) &middot; admin 164px &middot; iridex 161px.
+</div>
+
+<div class="note">
+<b>iridex palette</b> from <code>iridex.png</code> (re-sampled: the asset's actual accent is a near-pure cyan <code>#00ffff</code>; border below is a tamed-down version of it, not the raw pixel):
+<span style="margin-left:6px;"><span class="swatch" style="background:#0a1c4d;"></span>Light-Blue: navy #0a1c4d / link #2f63b8 / border #0ec4d2</span>
+&nbsp;&nbsp;<span><span class="swatch" style="background:#0a1c4d;"></span>Navy: #0a1c4d mono</span>
+&nbsp;&nbsp;<span><span class="swatch" style="background:#b8308f;"></span>Glitch: #1a1a2e / #b8308f / #0bb8c4</span>
+</div>
+
+<div class="note">
+<b>Send-as:</b> on admin/iridex threads confirm the <code>From:</code> alias at send &mdash; this sets the signature, not the sending identity.
+</div>
+
+<div class="note">
+<b>Open from restructure pass (v0.1):</b> nav link labels (Home/Team/Projects/Resources) are dev placeholders, not a real site IA &mdash; needs a decision later. Sign-in is now a functional demo toggle (see Sign-in toggle note) but still not real auth &mdash; needs a session/SSO backend, not building it here. yurixmoos max tier is structurally real (per your confirmation) but content-identical to min except logo size (64px) &mdash; no differentiating copy was specified, flag if that's wrong.
+</div>
+
+<div class="note">
+<b>To-do (placeholder buttons only, not built):</b> <b>Invert</b> &mdash; would flip a tile to a dark/inverted treatment, but a block can't just invert its background; it needs its own text-color theme too, plus a decision on whether it touches the real export or only the workspace preview, plus its own active-state tracking. Scoped as a new system, parked until designed properly. <b>Regenerate theme</b> &mdash; would call an LLM to propose a new theme variant; needs live API access wired in, not built. <b>Edit</b> &mdash; manual color/copy editor per tile, same idea as Regenerate but human-driven; not scoped yet. All three render disabled with a tooltip explaining why.
+</div>
+
+<div class="note">
+<b>Sign-in toggle:</b> functional demo, not real auth &mdash; clicking <b>Sign in</b> picks a random PNG from <code>admin.png</code> / <code>iridex.png</code> / <code>yurixmoos.png</code> / <code>test.png</code> as the nav profile picture and flips the button to <b>Sign out</b>; clicking <b>Sign out</b> clears the picture and flips it back. No session, no backend, just a client-side state flip.
+</div>
+
+</div>
+<script>
+var BASE = 'https://assets.carpedieminnovationsinc.com/sig/';
+var THEMES = {
+  iridex: {
+    lightblue: {navy:'#0a1c4d', body:'#3a5a8c', link:'#2f63b8', border:'#0ec4d2', labelColor:'#7b93b8', logo:BASE+'iridex.png'},
+    navy:      {navy:'#0a1c4d', body:'#5a5f66', link:'#0a1c4d', border:'#0a1c4d', labelColor:'#8a93a8', logo:BASE+'iridex.png'},
+    glitch:    {navy:'#1a1a2e', body:'#5c5c72', link:'#b8308f', border:'#0bb8c4', labelColor:'#8a7b96', logo:BASE+'iridex.png'}
+  },
+  admin:     { default: {navy:'#1a1a1a', body:'#5a5f66', link:'#3a5570', border:'#9aa0a8', labelColor:'#8a8f98', logo:BASE+'admin.png'},
+               brand:   {navy:'#1a1a1a', body:'#5a5f66', link:'#73282f', border:'#73282f', labelColor:'#8a8f98', logo:BASE+'admin.png'},
+               mono:    {navy:'#000000', body:'#5a5f66', link:'#1a1a1a', border:'#1a1a1a', labelColor:'#8a8f98', logo:BASE+'admin.png'} },
+  yurixmoos: { default:    {navy:'#1a1a1a', body:'#5a5f66', link:'#1a1a1a', border:'#9aa0a8', labelColor:'#8a8f98', logo:BASE+'yurixmoos.png'},
+               vyshyvanka: {navy:'#1a1a1a', body:'#5a5f66', link:'#a8262c', border:'#a8262c', labelColor:'#8a8f98', logo:BASE+'yurixmoos.png'},
+               heritage:   {navy:'#1a1a1a', body:'#5a5f66', link:'#b8860b', border:'#b8860b', labelColor:'#8a8f98', logo:BASE+'yurixmoos.png'} },
+  template:  { default: {navy:'#1a1a1a', body:'#5a5f66', link:'#1a5fb4', border:'#cfd2d8', labelColor:'#8a8f98', logo:BASE+'test.png'} }
+};
+
+var IR_MIN = [['GitHub','https://github.com/iridex-ai','github.com/iridex-ai'],
+              ['Hugging Face','https://huggingface.co/iridex-ai','huggingface.co/iridex-ai'],
+              ['ORCID','https://orcid.org/0009-0003-9784-3396','orcid.org/0009-0003-9784-3396']];
+var IR_MAX = [['GitHub','https://github.com/iridex-ai','github.com/iridex-ai'],
+              ['Hugging Face','https://huggingface.co/iridex-ai','huggingface.co/iridex-ai'],
+              ['Kaggle','https://kaggle.com/iridexai','kaggle.com/iridexai'],
+              ['Weights &amp; Biases','https://wandb.ai/profile/iridex-ai','wandb.ai/profile/iridex-ai'],
+              ['LM Studio','https://lmstudio.ai/iridex-ai','lmstudio.ai/iridex-ai'],
+              ['ORCID','https://orcid.org/0009-0003-9784-3396','orcid.org/0009-0003-9784-3396']];
+var AD_MAX = [['GitHub','https://github.com/carpe-diem-innovations-inc','github.com/carpe-diem-innovations-inc'],
+              ['Hugging Face','https://huggingface.co/carpe-diem-innovations-inc','huggingface.co/carpe-diem-innovations-inc'],
+              ['LM Studio','https://lmstudio.ai/carpedieminnovations','lmstudio.ai/carpedieminnovations'],
+              ['Weights &amp; Biases','https://wandb.ai/iridex-ai-carpe-diem-innovations-inc','wandb.ai/iridex-ai-carpe-diem-innovations-inc']];
+
+var CONTENT = {
+  iridex: {
+    min: {h:113, name:'iridex', subs:['AI / ML development'], pre:'', email:'iridex@carpedieminnovationsinc.com', extra:[], links:IR_MIN},
+    max: {h:161, name:'iridex', subs:['AI / ML development'], pre:'', email:'iridex@carpedieminnovationsinc.com', extra:[], links:IR_MAX}
+  },
+  admin: {
+    min: {h:94,  name:'Yuriy Moos', subs:['Director &mdash; Carpe Diem Innovations Inc.','Artificial intelligence research &amp; development'], pre:'416-428-4777 &nbsp;&middot;&nbsp; ', email:'admin@carpedieminnovationsinc.com', extra:['Greater Toronto Area, Canada'], links:[]},
+    max: {h:164, name:'Yuriy Moos', subs:['Director &mdash; Carpe Diem Innovations Inc.','Artificial intelligence research &amp; development'], pre:'416-428-4777 &nbsp;&middot;&nbsp; ', email:'admin@carpedieminnovationsinc.com', extra:['Greater Toronto Area, Canada'], links:AD_MAX}
+  },
+  yurixmoos: {
+    min: {h:42, name:'Yuriy Moos', subs:[], pre:'416-428-4777 &nbsp;&middot;&nbsp; ', email:'yurixmoos@gmail.com', extra:[], links:[]},
+    max: {h:64, name:'Yuriy Moos', subs:[], pre:'416-428-4777 &nbsp;&middot;&nbsp; ', email:'yurixmoos@gmail.com', extra:[], links:[]}
+  },
+  template: {
+    min: {h:64, name:'Template Name', subs:['Role / title placeholder'], pre:'', email:'name@carpedieminnovationsinc.com', extra:[], links:[]},
+    max: {h:160, name:'Template Name', subs:['Role / title placeholder','Secondary line placeholder'], pre:'', email:'name@carpedieminnovationsinc.com', extra:['Extra line placeholder'], links:[['Label','https://example.com','example.com/placeholder']]}
+  }
+};
+
+var active = {
+  iridex: {min:'lightblue', max:'lightblue'},
+  admin: {min:'default', max:'default'},
+  yurixmoos: {min:'default', max:'default'}
+};
+
+function linksHtml(links, t){
+  if(!links.length) return '';
+  return '<div style="padding-top:6px;font-size:11px;">'+links.map(function(l){
+    return '<div><span style="color:'+t.labelColor+';">'+l[0]+':</span> <a href="'+l[1]+'" style="color:'+t.link+';text-decoration:none;">'+l[2]+'</a></div>';
+  }).join('')+'</div>';
+}
+
+function makeSig(identity, tier, themeKey){
+  var t = THEMES[identity][themeKey];
+  var c = CONTENT[identity][tier];
+  var emailLink = '<a href="mailto:'+c.email+'" style="color:'+t.link+';text-decoration:none;">'+c.email+'</a>';
+  var html = '<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;font-size:12px;line-height:1.45;"><tr>'
+    +'<td style="padding-right:14px;vertical-align:middle;"><img src="'+t.logo+'" width="'+c.h+'" height="'+c.h+'" alt="'+c.name+'" style="display:block;border:0;"></td>'
+    +'<td style="vertical-align:top;border-left:2px solid '+t.border+';padding-left:14px;">'
+    +'<div style="font-size:14px;font-weight:bold;color:'+t.navy+';">'+c.name+'</div>';
+  c.subs.forEach(function(s){ html += '<div style="color:'+t.body+';">'+s+'</div>'; });
+  html += '<div style="color:'+t.body+';padding-top:4px;">'+c.pre+emailLink+'</div>';
+  c.extra.forEach(function(s){ html += '<div style="color:'+t.body+';">'+s+'</div>'; });
+  html += linksHtml(c.links, t)+'</td></tr></table>';
+  return html;
+}
+var THEME_LABELS = {lightblue:'Light-Blue', navy:'Monochrome Navy', glitch:'Glitch Duo-tone', default:'Default', brand:'CDI Brand', mono:'Monochrome Black', vyshyvanka:'Vyshyvanka', heritage:'Heritage'};
+var IDENTITY_THEMES = {
+  iridex: ['lightblue','navy','glitch'],
+  admin: ['default','brand','mono'],
+  yurixmoos: ['default','vyshyvanka','heritage']
+};
+
+function renderWorkspace(){
+  Object.keys(IDENTITY_THEMES).forEach(function(id){
+    IDENTITY_THEMES[id].forEach(function(k){
+      document.getElementById('ws-'+id+'-'+k+'-min').innerHTML = makeSig(id,'min',k);
+      document.getElementById('ws-'+id+'-'+k+'-max').innerHTML = makeSig(id,'max',k);
+    });
+  });
+}
+
+function renderTemplate(){
+  document.getElementById('ws-template-min').innerHTML = makeSig('template','min','default');
+  document.getElementById('ws-template-max').innerHTML = makeSig('template','max','default');
+}
+
+function renderExports(){
+  document.getElementById('sig-iridex-min').innerHTML = makeSig('iridex','min',active.iridex.min);
+  document.getElementById('sig-iridex-max').innerHTML = makeSig('iridex','max',active.iridex.max);
+  document.getElementById('sig-admin-min').innerHTML = makeSig('admin','min',active.admin.min);
+  document.getElementById('sig-admin-max').innerHTML = makeSig('admin','max',active.admin.max);
+  document.getElementById('sig-yurixmoos-min').innerHTML = makeSig('yurixmoos','min',active.yurixmoos.min);
+  document.getElementById('sig-yurixmoos-max').innerHTML = makeSig('yurixmoos','max',active.yurixmoos.max);
+}
+
+function updateBadgesAndStatus(){
+  Object.keys(IDENTITY_THEMES).forEach(function(id){
+    IDENTITY_THEMES[id].forEach(function(k){
+      var el = document.getElementById('badge-'+id+'-'+k);
+      var tiers = [];
+      if(active[id].min===k) tiers.push('Min');
+      if(active[id].max===k) tiers.push('Max');
+      if(tiers.length){ el.style.display='inline-block'; el.textContent='ACTIVE: '+tiers.join('+'); }
+      else el.style.display='none';
+    });
+    document.getElementById('status-'+id).innerHTML =
+      '<span class="status-chip">Min: <b>'+THEME_LABELS[active[id].min]+'</b></span><span class="status-chip">Max: <b>'+THEME_LABELS[active[id].max]+'</b></span>';
+  });
+}
+
+function importTheme(identity, themeKey, tier){
+  active[identity][tier] = themeKey;
+  renderExports();
+  updateBadgesAndStatus();
+}
+
+function copySig(id, btn){
+  var el = document.getElementById(id);
+  var range = document.createRange();
+  range.selectNode(el);
+  var sel = window.getSelection();
+  sel.removeAllRanges(); sel.addRange(range);
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch(e) { ok = false; }
+  sel.removeAllRanges();
+  if(btn){ var prev = btn.textContent; btn.textContent = ok ? 'Copied \u2713' : 'Select + Ctrl+C'; setTimeout(function(){ btn.textContent = prev; }, 1600); }
+}
+
+var PNG_ASSETS = ['admin.png','iridex.png','yurixmoos.png','test.png'];
+var signedIn = false;
+function toggleSignIn(btn){
+  var img = document.getElementById('nav-profile-img');
+  signedIn = !signedIn;
+  if(signedIn){
+    var pick = PNG_ASSETS[Math.floor(Math.random()*PNG_ASSETS.length)];
+    img.src = BASE + pick;
+    img.style.display = 'block';
+    btn.textContent = 'Sign out';
+  } else {
+    img.removeAttribute('src');
+    img.style.display = 'none';
+    btn.textContent = 'Sign in';
+  }
+}
+
+renderWorkspace();
+renderExports();
+renderTemplate();
+updateBadgesAndStatus();
+</script>
+</body>
+</html>
