@@ -1,0 +1,24 @@
+# Dependency policy for assets.
+#
+# Brand-asset host served over GitHub Pages. Its checker is standard library only -
+# no packages to scan, so there is no pip entry. Note the checker also fails if a
+# LICENSE file appears: these assets are deliberately unlicensed.
+
+version: 2
+
+updates:
+  # The workflow is this repository's only dependency, and it is a real one: an action runs
+  # with access to the repository, so an abandoned or compromised version matters. It is also
+  # the clean-runner evidence the verification story relies on, so it stays current.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build(ci)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
