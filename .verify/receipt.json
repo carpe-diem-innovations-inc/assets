@@ -2,34 +2,34 @@
   "schema": "gatekeeper/0.1",
   "repo": "carpe-diem-innovations-inc/assets",
   "visibility": "PUBLIC",
-  "head": "36309819995f257902d1e992bc6d9f43c988c4fb",
+  "head": "dee1de4c99995aa1d3e4e63cfefad9339deb6b88",
   "content_id": "0fc00351719d46c330d2c7e4ecb82e6533ef8a320a5b0a69edd4cc11a812fe0f",
   "branch": "verify/scope",
-  "verified_at": "2026-09-07T16:04:04.8275178-04:00",
+  "verified_at": "2026-09-07T16:05:53.2233368-04:00",
   "box": "CRADLE",
   "stages": {
     "works": {
-      "evidence": "checked: 6 item(s), 4 image(s)",
-      "exit": 0,
+      "cmd": "python scripts/verify_assets.py",
       "status": "pass",
-      "cmd": "python scripts/verify_assets.py"
+      "evidence": "checked: 6 item(s), 4 image(s)",
+      "exit": 0
     },
     "safe": {
       "status": "pass",
       "checks": [
         {
-          "hits": [],
           "status": "pass",
+          "hits": [],
           "name": "no_secrets"
         },
         {
-          "hits": [],
           "status": "pass",
+          "hits": [],
           "name": "no_estate_paths"
         },
         {
-          "detail": "NOTICE reserves all rights",
           "status": "pass",
+          "detail": "NOTICE reserves all rights",
           "name": "licence_declared"
         },
         {
@@ -38,16 +38,21 @@
           "name": "tree_clean"
         },
         {
-          "detail": "README carries a verification section and the CI badge",
           "status": "pass",
+          "detail": "README carries a verification section and the CI badge",
           "name": "verification_documented"
         }
       ]
     },
     "elsewhere": {
-      "status": "pending",
-      "sha": "36309819995f257902d1e992bc6d9f43c988c4fb",
-      "reason": "no CI run recorded for 36309819995f257902d1e992bc6d9f43c988c4fb"
+      "runs": [
+        {
+          "workflow": "verify",
+          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34157984205",
+          "conclusion": "success"
+        }
+      ],
+      "status": "pass"
     }
   }
 }
