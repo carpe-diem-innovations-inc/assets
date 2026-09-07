@@ -32,3 +32,5 @@ jobs:
             exit 1
           fi
           echo clean
+          # git grep exits 1 when it finds nothing; end the step deterministically
+          exit 0
