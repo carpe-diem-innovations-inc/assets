@@ -1,10 +1,10 @@
 # CLAUDE.md
 version: 1.0
 role: code-surface project layer — assets (CDI brand-asset host)
-deploy: auto-loaded (Code walks cwd upward); inherits B:\CLAUDE.md
+deploy: auto-loaded (Code walks cwd upward)
 status: active
 
-Inherits `B:\CLAUDE.md` + account canon (auto-composed as Code walks cwd upward). Adds repo
+Inherits the account-level canon (auto-composed as Code walks cwd upward). Adds repo
 specifics only — nothing restated.
 
 - **Owner:** carpe-diem-innovations-inc (admin). **Surface:** code.

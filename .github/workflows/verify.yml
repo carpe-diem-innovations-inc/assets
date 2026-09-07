@@ -1,0 +1,34 @@
+name: verify
+
+# Proves the brand-asset host is servable from a machine that is not the author's, and that
+# its licence position has not drifted. Standard library only - no install step.
+#
+# A green run here is what lets a push reach the default branch - see .verify/config.json.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assets are servable and rights are still reserved
+        run: python scripts/verify_assets.py
+
+      - name: No committed secrets
+        shell: bash
+        run: |
+          if git grep -nIE '(BEGIN [A-Z ]*PRIVATE KEY|gh[pousr]_[A-Za-z0-9]{16,}|AKIA[0-9A-Z]{16})' -- $(git ls-files); then
+            echo 'credential-shaped content in tracked files'
+            exit 1
+          fi
+          echo clean
