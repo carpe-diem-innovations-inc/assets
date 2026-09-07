@@ -3,61 +3,66 @@
   "repo": "carpe-diem-innovations-inc/assets",
   "visibility": "PUBLIC",
   "visibility_assumed": false,
-  "head": "6bd55f6494a5860f05eff47f55e1d3397683b773",
+  "head": "622a58eb97e8c991af4971373bf3ef8a45d4a14d",
   "content_id": "24df44c967de76f8490851df6bb3d3932d006f6d24c5fed956a62eace44983f8",
   "branch": "ci/dependabot-policy",
-  "verified_at": "2026-09-07T19:50:27.5041402-04:00",
+  "verified_at": "2026-09-07T19:52:43.3295037-04:00",
   "ran_on": "windows-26100.9168",
   "stages": {
     "works": {
+      "timed_out": false,
       "proved_on": "windows-26100.9168",
+      "exit": 0,
       "cmd": "python scripts/verify_assets.py",
       "evidence": "checked: 6 item(s), 4 image(s)",
-      "exit": 0,
-      "timed_out": false,
       "status": "pass"
     },
     "safe": {
+      "status": "pass",
+      "proved_on": "windows-26100.9168",
       "checks": [
         {
+          "status": "pass",
           "name": "no_secrets",
-          "hits": [],
-          "status": "pass"
+          "hits": []
         },
         {
+          "status": "pass",
           "name": "no_estate_paths",
-          "hits": [],
-          "status": "pass"
+          "hits": []
         },
         {
+          "status": "pass",
           "name": "no_machine_names",
-          "hits": [],
-          "status": "pass"
+          "hits": []
         },
         {
+          "status": "pass",
           "name": "licence_declared",
-          "detail": "NOTICE reserves all rights",
-          "status": "pass"
+          "detail": "NOTICE reserves all rights"
         },
         {
-          "name": "tree_clean",
           "dirty_files": 0,
-          "status": "pass"
+          "status": "pass",
+          "name": "tree_clean"
         },
         {
+          "status": "pass",
           "name": "verification_documented",
-          "detail": "README carries a verification section and the CI badge",
-          "status": "pass"
+          "detail": "README carries a verification section and the CI badge"
         }
-      ],
-      "proved_on": "windows-26100.9168",
-      "status": "pass"
+      ]
     },
     "elsewhere": {
-      "reason": "no CI run recorded for 6bd55f6494a5860f05eff47f55e1d3397683b773",
-      "proved_on": null,
-      "status": "pending",
-      "sha": "6bd55f6494a5860f05eff47f55e1d3397683b773"
+      "status": "pass",
+      "proved_on": "github-actions",
+      "runs": [
+        {
+          "workflow": "verify",
+          "conclusion": "success",
+          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34171385659"
+        }
+      ]
     }
   }
 }
