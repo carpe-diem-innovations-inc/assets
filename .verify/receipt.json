@@ -3,36 +3,35 @@
   "repo": "carpe-diem-innovations-inc/assets",
   "visibility": "PUBLIC",
   "visibility_assumed": false,
-  "head": "ce0aeea076539527873a8ab17062416d5a016b43",
-  "content_id": "af998bd0025f74b4188183a402a56b8d6930354414842658f26a36bda147c6f9",
+  "head": "6bd55f6494a5860f05eff47f55e1d3397683b773",
+  "content_id": "24df44c967de76f8490851df6bb3d3932d006f6d24c5fed956a62eace44983f8",
   "branch": "ci/dependabot-policy",
-  "verified_at": "2026-09-07T19:48:13.1873044-04:00",
+  "verified_at": "2026-09-07T19:50:27.5041402-04:00",
   "ran_on": "windows-26100.9168",
   "stages": {
     "works": {
-      "cmd": "python scripts/verify_assets.py",
       "proved_on": "windows-26100.9168",
-      "exit": 0,
+      "cmd": "python scripts/verify_assets.py",
       "evidence": "checked: 6 item(s), 4 image(s)",
+      "exit": 0,
       "timed_out": false,
       "status": "pass"
     },
     "safe": {
-      "proved_on": "windows-26100.9168",
       "checks": [
         {
-          "hits": [],
           "name": "no_secrets",
+          "hits": [],
           "status": "pass"
         },
         {
-          "hits": [],
           "name": "no_estate_paths",
+          "hits": [],
           "status": "pass"
         },
         {
-          "hits": [],
           "name": "no_machine_names",
+          "hits": [],
           "status": "pass"
         },
         {
@@ -41,9 +40,9 @@
           "status": "pass"
         },
         {
-          "dirty_files": 1,
           "name": "tree_clean",
-          "status": "fail"
+          "dirty_files": 0,
+          "status": "pass"
         },
         {
           "name": "verification_documented",
@@ -51,13 +50,14 @@
           "status": "pass"
         }
       ],
-      "status": "fail"
+      "proved_on": "windows-26100.9168",
+      "status": "pass"
     },
     "elsewhere": {
-      "reason": "no CI run recorded for ce0aeea076539527873a8ab17062416d5a016b43",
+      "reason": "no CI run recorded for 6bd55f6494a5860f05eff47f55e1d3397683b773",
       "proved_on": null,
-      "sha": "ce0aeea076539527873a8ab17062416d5a016b43",
-      "status": "pending"
+      "status": "pending",
+      "sha": "6bd55f6494a5860f05eff47f55e1d3397683b773"
     }
   }
 }
