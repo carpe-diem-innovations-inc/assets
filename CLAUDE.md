@@ -1,3 +1,20 @@
+> ‼‼ ORPHANED AS A HOST — 2026-09-07
+>
+> **Nothing is served from this repository any more.**
+> `assets.carpedieminnovationsinc.com` was a Cloudflare-proxied CNAME to GitHub Pages; it is
+> now a **Worker custom domain** on `cdi-site`, and the signature assets are served from
+> `cdi-site/src/sig/`.
+>
+> ‼ **THE `CNAME` FILE IS THEREFORE INERT.** It still reads
+> `assets.carpedieminnovationsinc.com`, which now looks like a claim to be the host and is
+> not one. **It is left in place deliberately** — deleting it would make a GitHub Pages
+> fallback harder to restore in a hurry, and this is the rollback path if the Worker ever
+> has to be undone.
+>
+> ‼ **IF `sig/` HERE EVER DIVERGES FROM `cdi-site/src/sig/`, THE OTHER REPO IS WHAT THE
+> WORLD SEES.** The three PNGs were byte-identical at the cutover and were verified as such
+> before and after.
+
 # CLAUDE.md
 version: 1.0
 role: code-surface project layer — assets (CDI brand-asset host)

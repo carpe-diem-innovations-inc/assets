@@ -3,23 +3,21 @@
   "repo": "carpe-diem-innovations-inc/assets",
   "visibility": "PUBLIC",
   "visibility_assumed": false,
-  "head": "622a58eb97e8c991af4971373bf3ef8a45d4a14d",
-  "content_id": "24df44c967de76f8490851df6bb3d3932d006f6d24c5fed956a62eace44983f8",
-  "branch": "ci/dependabot-policy",
-  "verified_at": "2026-09-07T19:52:43.3295037-04:00",
+  "head": "5df4e4609341943dcb629f1453d2a6a4d05fe085",
+  "content_id": "2c039e2e92fdd709c56d9e74a0c9db33c8b5b931cf3d9f48269e10dfc18f3704",
+  "branch": "main",
+  "verified_at": "2026-09-07T23:41:17.0343356-04:00",
   "ran_on": "windows-26100.9168",
   "stages": {
     "works": {
+      "evidence": "checked: 5 item(s), 3 image(s)",
+      "status": "pass",
       "timed_out": false,
-      "proved_on": "windows-26100.9168",
       "exit": 0,
       "cmd": "python scripts/verify_assets.py",
-      "evidence": "checked: 6 item(s), 4 image(s)",
-      "status": "pass"
+      "proved_on": "windows-26100.9168"
     },
     "safe": {
-      "status": "pass",
-      "proved_on": "windows-26100.9168",
       "checks": [
         {
           "status": "pass",
@@ -42,27 +40,31 @@
           "detail": "NOTICE reserves all rights"
         },
         {
-          "dirty_files": 0,
           "status": "pass",
-          "name": "tree_clean"
+          "name": "tree_clean",
+          "dirty_files": 0
         },
         {
           "status": "pass",
           "name": "verification_documented",
           "detail": "README carries a verification section and the CI badge"
         }
-      ]
+      ],
+      "status": "pass",
+      "proved_on": "windows-26100.9168"
     },
     "elsewhere": {
       "status": "pass",
-      "proved_on": "github-actions",
       "runs": [
         {
-          "workflow": "verify",
+          "status": "completed",
           "conclusion": "success",
-          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34171385659"
+          "workflow": "verify",
+          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34177838600"
         }
-      ]
+      ],
+      "workflow": "verify",
+      "proved_on": "github-actions"
     }
   }
 }
