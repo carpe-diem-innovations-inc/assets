@@ -3,74 +3,66 @@
   "repo": "carpe-diem-innovations-inc/assets",
   "visibility": "PUBLIC",
   "visibility_assumed": false,
-  "head": "9c83b467446d75b9d2e2a065ba75dc2f3d260571",
-  "content_id": "684018cb34fcbe993f4019c8a449cda4168dbac9de57d9c8ad6e5cc1172bec8f",
+  "head": "75f71cd7c81358b6847949849717eacf68322754",
+  "content_id": "6701cbb5d6a88d4ccf96f6d625afc6007e2f5b12c73cb583be4e7b460df8a152",
   "branch": "main",
-  "verified_at": "2026-09-08T02:11:56.4770946-04:00",
+  "verified_at": "2026-09-08T16:51:19.9123611-04:00",
   "ran_on": "windows-26100.9168",
   "stages": {
     "works": {
-      "evidence": "checked: 5 item(s), 3 image(s)",
-      "cmd": "python scripts/verify_assets.py",
       "proved_on": "windows-26100.9168",
-      "status": "pass",
+      "cmd": "python scripts/verify_assets.py",
+      "evidence": "checked: 5 item(s), 3 image(s)",
       "exit": 0,
+      "status": "pass",
       "timed_out": false
     },
     "safe": {
       "checks": [
         {
-          "hits": [],
-          "name": "no_secrets",
-          "status": "pass"
-        },
-        {
-          "hits": [],
-          "name": "no_estate_paths",
-          "status": "pass"
-        },
-        {
-          "hits": [],
-          "name": "no_machine_names",
-          "status": "pass"
-        },
-        {
-          "detail": "NOTICE reserves all rights",
-          "name": "licence_declared",
-          "status": "pass"
-        },
-        {
-          "name": "tree_clean",
           "status": "pass",
+          "name": "no_secrets",
+          "hits": []
+        },
+        {
+          "status": "pass",
+          "name": "no_estate_paths",
+          "hits": []
+        },
+        {
+          "status": "pass",
+          "name": "no_machine_names",
+          "hits": []
+        },
+        {
+          "status": "pass",
+          "name": "licence_declared",
+          "detail": "NOTICE reserves all rights"
+        },
+        {
+          "status": "pass",
+          "name": "tree_clean",
           "dirty_files": 0
         },
         {
-          "detail": "README carries a verification section and the CI badge",
+          "status": "pass",
           "name": "verification_documented",
-          "status": "pass"
+          "detail": "README carries a verification section and the CI badge"
         }
       ],
-      "proved_on": "windows-26100.9168",
-      "status": "pass"
+      "status": "pass",
+      "proved_on": "windows-26100.9168"
+    },
+    "memory": {
+      "status": "n/a",
+      "proved_on": null,
+      "reason": "a static asset repo validated by scripts/verify_assets.py. The verification here is a one-shot script that runs and exits, so there is no resident process for a leak to accumulate in. Re-declare this the moment anything here becomes long-running."
     },
     "elsewhere": {
-      "runs": [
-        {
-          "workflow": "verify",
-          "status": "completed",
-          "conclusion": "success",
-          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34184459623"
-        },
-        {
-          "workflow": "verify",
-          "status": "completed",
-          "conclusion": "success",
-          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34184400898"
-        }
-      ],
-      "workflow": "verify",
-      "proved_on": "github-actions",
-      "status": "pass"
+      "status": "pending",
+      "sha": "75f71cd7c81358b6847949849717eacf68322754",
+      "proved_on": null,
+      "reason": "no CI run recorded for 75f71cd7c81358b6847949849717eacf68322754"
     }
   }
 }
