@@ -3,68 +3,74 @@
   "repo": "carpe-diem-innovations-inc/assets",
   "visibility": "PUBLIC",
   "visibility_assumed": false,
-  "head": "5df4e4609341943dcb629f1453d2a6a4d05fe085",
-  "content_id": "2c039e2e92fdd709c56d9e74a0c9db33c8b5b931cf3d9f48269e10dfc18f3704",
+  "head": "9c83b467446d75b9d2e2a065ba75dc2f3d260571",
+  "content_id": "684018cb34fcbe993f4019c8a449cda4168dbac9de57d9c8ad6e5cc1172bec8f",
   "branch": "main",
-  "verified_at": "2026-09-07T23:41:17.0343356-04:00",
+  "verified_at": "2026-09-08T02:11:56.4770946-04:00",
   "ran_on": "windows-26100.9168",
   "stages": {
     "works": {
       "evidence": "checked: 5 item(s), 3 image(s)",
-      "status": "pass",
-      "timed_out": false,
-      "exit": 0,
       "cmd": "python scripts/verify_assets.py",
-      "proved_on": "windows-26100.9168"
+      "proved_on": "windows-26100.9168",
+      "status": "pass",
+      "exit": 0,
+      "timed_out": false
     },
     "safe": {
       "checks": [
         {
-          "status": "pass",
+          "hits": [],
           "name": "no_secrets",
-          "hits": []
+          "status": "pass"
         },
         {
-          "status": "pass",
+          "hits": [],
           "name": "no_estate_paths",
-          "hits": []
+          "status": "pass"
         },
         {
-          "status": "pass",
+          "hits": [],
           "name": "no_machine_names",
-          "hits": []
+          "status": "pass"
         },
         {
-          "status": "pass",
+          "detail": "NOTICE reserves all rights",
           "name": "licence_declared",
-          "detail": "NOTICE reserves all rights"
+          "status": "pass"
         },
         {
-          "status": "pass",
           "name": "tree_clean",
+          "status": "pass",
           "dirty_files": 0
         },
         {
-          "status": "pass",
+          "detail": "README carries a verification section and the CI badge",
           "name": "verification_documented",
-          "detail": "README carries a verification section and the CI badge"
+          "status": "pass"
         }
       ],
-      "status": "pass",
-      "proved_on": "windows-26100.9168"
+      "proved_on": "windows-26100.9168",
+      "status": "pass"
     },
     "elsewhere": {
-      "status": "pass",
       "runs": [
         {
+          "workflow": "verify",
           "status": "completed",
           "conclusion": "success",
+          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34184459623"
+        },
+        {
           "workflow": "verify",
-          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34177838600"
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/carpe-diem-innovations-inc/assets/actions/runs/34184400898"
         }
       ],
       "workflow": "verify",
-      "proved_on": "github-actions"
+      "proved_on": "github-actions",
+      "status": "pass"
     }
   }
 }

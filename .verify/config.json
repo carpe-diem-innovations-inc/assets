@@ -1,4 +1,5 @@
 {
   "_comment": "Verification scope for assets. No application to run, so 'works' proves the repo can still do its job: every image is a real image, CNAME carries a hostname, NOTICE still reserves all rights, and no LICENSE file has appeared. That last check is deliberate - these are proprietary brand marks and an open licence added by reflex would give them away. See B:/runners/verify.ps1 and canon disclosure_and_verification.md 2.3.",
-  "works": "python scripts/verify_assets.py"
+  "works": "python scripts/verify_assets.py",
+  "memory": "n/a - a static asset repo validated by scripts/verify_assets.py. The verification here is a one-shot script that runs and exits, so there is no resident process for a leak to accumulate in. Re-declare this the moment anything here becomes long-running."
 }
